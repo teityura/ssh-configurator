@@ -1,0 +1,15 @@
+# === all host settings ===
+Host *
+    ServerAliveInterval 15
+    ServerAliveCountMax 10
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+
+# === ssh_hosts settings ===
+{% for host in ssh_hosts %}
+Host {{ host.name }}
+  Hostname {{ host.ip }}
+  User {{ host.user | default('root') }}
+  IdentityFile /keys/{{ host.name | default(Default_key_name) }}.id_rsa
+
+{% endfor %}

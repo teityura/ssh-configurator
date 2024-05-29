@@ -1,0 +1,16 @@
+- hosts: localhost
+  gather_facts: no
+  pre_tasks:
+    - name: Set _config_path
+      set_fact:
+        _config_path: "/etc/ssh/ssh_config.d/{{ _project_name }}.conf"
+      vars:
+        _project_name: "{{ playbook_dir.split('/')[-1] }}"
+  vars:
+    KEY_NAME: 'common'
+  roles:
+    - name: Include ssh role
+      role: ssh
+      vars:
+        Default_key_name: "{{ KEY_NAME }}"
+        Ansible_ssh_config: "{{ _config_path }}"
