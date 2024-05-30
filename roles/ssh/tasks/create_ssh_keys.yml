@@ -1,9 +1,12 @@
 - name: Generate ssh key
   openssh_keypair:
-    path: "/keys/{{ host.name | default(Default_key_name) }}.id_rsa"
+    path: "/keys/{{ key_name }}.id_rsa"
     type: rsa
     size: 4096
     mode: 0600
+  vars:
+    indiv: "{{ host.key_indiv | default(false) }}"
+    key_name: "{{ indiv | ternary(host.name, Default_key_name) }}"
   loop: "{{ ssh_hosts }}"
   loop_control:
     loop_var: host

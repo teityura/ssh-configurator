@@ -10,6 +10,6 @@ Host *
 Host {{ host.name }}
   Hostname {{ host.ip }}
   User {{ host.user | default('root') }}
-  IdentityFile /keys/{{ host.name | default(Default_key_name) }}.id_rsa
+  IdentityFile /keys/{{ host.key_indiv | default(false) | ternary(host.name, Default_key_name) }}.id_rsa
 
 {% endfor %}
