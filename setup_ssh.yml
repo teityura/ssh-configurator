@@ -3,7 +3,7 @@
   pre_tasks:
     - name: Set _config_path
       set_fact:
-        _config_path: "/etc/ssh/ssh_config.d/{{ _project_name }}.conf"
+        _config_path: "/etc/ssh/ssh_config.d/99-{{ _project_name }}.conf"
       vars:
         _project_name: "{{ playbook_dir.split('/')[-1] }}"
   vars:
