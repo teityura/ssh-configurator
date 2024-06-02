@@ -9,4 +9,4 @@
     src: ssh_config.j2
     dest: "{{ Ansible_ssh_config }}"
     mode: 0644
-    # backup: yes
+    backup: yes
