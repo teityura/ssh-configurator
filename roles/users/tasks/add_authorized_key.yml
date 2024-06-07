@@ -1,6 +1,6 @@
 - name: Add root user to _users
   set_fact:
-    _users: "{{ [ansible_user] + ['root'] if ansible_user != 'root' else ['root'] }}"
+    _users: "{{ [ansible_user, 'root'] | unique }}"
 
 - name: Print _users
   debug:
@@ -12,5 +12,5 @@
     key: "{{ lookup('file', '/keys/' + key_name + '.id_rsa.pub') }}"
   loop: "{{ _users }}"
   vars:
-    indiv: "{{ host.key_indiv | default(false) }}"
-    key_name: "{{ indiv | ternary(host.name, Default_key_name) }}"
+    indiv: "{{ key_indiv | default(false) }}"
+    key_name: "{{ indiv | ternary(inventory_hostname, Default_key_name) }}"
