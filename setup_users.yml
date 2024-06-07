@@ -1,0 +1,30 @@
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Include vars from ssh role
+      include_vars:
+        file: roles/ssh/vars/main.yml
+    - debug:
+        var: ssh_hosts
+
+    - name: Define vm_group
+      add_host:
+        hostname: "{{ host.name }}"
+        ansible_user: "{{ host.user }}"
+        key_indiv: "{{ host.key_indiv | default(false) }}"
+        groups: vm_group
+      loop: "{{ ssh_hosts }}"
+      loop_control:
+        loop_var: host
+
+- hosts: vm_group
+  gather_facts: no
+  become: yes
+  become_method: sudo
+  remote_user: ansible_user
+  vars:
+    KEY_NAME: 'common'
+  roles:
+    - role: users
+      vars:
+        Default_key_name: "{{ KEY_NAME }}"

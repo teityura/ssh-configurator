@@ -5,11 +5,11 @@
 ``` yml
 ---
 ssh_hosts:
-  - name: vm_alma94
+  - name: vm_alma89
     ip: 192.168.100.1
     user: almalinux
 
-  - name: vm_alma89
+  - name: vm_alma94
     ip: 192.168.100.2
     user: almalinux
 
@@ -17,9 +17,14 @@ ssh_hosts:
     ip: 192.168.100.3
     user: ubuntu
 
-  - name: vm_ubuntu2004
+  - name: vm_ubuntu2204
     ip: 192.168.100.4
     user: ubuntu
+
+  - name: vm_rocky88
+    ip: 192.168.100.10
+    user: rocky
+    key_indiv: yes
 ```
 
 ## 2. run setup_ssh.yml
@@ -31,15 +36,11 @@ ansible-playbook setup.yml
 ## 3. result
 
 ``` log
-[root@adm ~]$ ls -l /keys/vm_*
--rw------- 1 root root 3357 May 30 02:21 /keys/vm_alma89.id_rsa
--rw------- 1 root root  726 May 30 02:21 /keys/vm_alma89.id_rsa.pub
--rw------- 1 root root 3357 May 30 02:21 /keys/vm_alma94.id_rsa
--rw------- 1 root root  726 May 30 02:21 /keys/vm_alma94.id_rsa.pub
--rw------- 1 root root 3357 May 30 02:21 /keys/vm_ubuntu2004.id_rsa
--rw------- 1 root root  726 May 30 02:21 /keys/vm_ubuntu2004.id_rsa.pub
--rw------- 1 root root 3357 May 30 02:30 /keys/vm_ubuntu2204.id_rsa
--rw------- 1 root root  726 May 30 02:30 /keys/vm_ubuntu2204.id_rsa.pub
+[root@adm ~]$ ls -l /keys/common* /keys/vm_*
+-rw------- 1 root root 3401 May 30 03:00 /keys/common.id_rsa
+-rw------- 1 root root  754 May 30 03:00 /keys/common.id_rsa.pub
+-rw------- 1 root root 3357 May 31 01:34 /keys/vm_rocky88.id_rsa
+-rw------- 1 root root  726 May 31 01:34 /keys/vm_rocky88.id_rsa.pub
 
 ===
 
@@ -55,20 +56,25 @@ Host *
 Host vm_alma89
   Hostname 192.168.100.1
   User almalinux
-  IdentityFile /keys/vm_alma89.id_rsa
+  IdentityFile /keys/common.id_rsa
 
 Host vm_alma94
   Hostname 192.168.100.2
   User almalinux
-  IdentityFile /keys/vm_alma94.id_rsa
+  IdentityFile /keys/common.id_rsa
 
 Host vm_ubuntu2004
   Hostname 192.168.100.3
   User ubuntu
-  IdentityFile /keys/vm_ubuntu2004.id_rsa
+  IdentityFile /keys/common.id_rsa
 
 Host vm_ubuntu2204
   Hostname 192.168.100.4
   User ubuntu
-  IdentityFile /keys/vm_ubuntu2204.id_rsa
+  IdentityFile /keys/common.id_rsa
+
+Host vm_rocky88
+  Hostname 192.168.100.10
+  User rocky
+  IdentityFile /keys/vm_rocky88.id_rsa
 ```
