@@ -21,7 +21,7 @@
     validate: /usr/sbin/sshd -T -f %s
   when: not _include_exists
 
-- name: Allow PermitRootLogin
+- name: Allow permitrootlogin
   blockinfile:
     path: /etc/ssh/sshd_config.d/00-users.conf
     block: |

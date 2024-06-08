@@ -1,0 +1,65 @@
+- name: Check if sshd_config needs replace
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  loop:
+    - regexp: '^\s*PermitRootLogin\s+.*$'
+      line: 'PermitRootLogin yes  # ANSIBLE MANAGED LINE'
+    - regexp: '^\s*PubkeyAuthentication\s+.*$'
+      line: 'PubkeyAuthentication yes  # ANSIBLE MANAGED LINE'
+    - regexp: '^\s*PasswordAuthentication\s+.*$'
+      line: 'PasswordAuthentication no  # ANSIBLE MANAGED LINE'
+  check_mode: yes
+  register: _result_check
+
+- name: Replace sshd_config
+  block:
+    - name: Set _cur_time
+      set_fact:
+        _cur_time: "{{ lookup('pipe', 'date +%Y-%m-%d@%H:%M:%S') }}"
+
+    - name: Backup sshd_config
+      copy:
+        src: /etc/ssh/sshd_config
+        dest: "/etc/ssh/sshd_config.{{ _cur_time }}"
+        remote_src: yes
+      register: _result_copy
+
+    - name: Allow permitrootlogin
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      loop:
+        - regexp: '^\s*PermitRootLogin\s+.*$'
+          line: 'PermitRootLogin yes  # ANSIBLE MANAGED LINE'
+        - regexp: '^\s*PubkeyAuthentication\s+.*$'
+          line: 'PubkeyAuthentication yes  # ANSIBLE MANAGED LINE'
+        - regexp: '^\s*PasswordAuthentication\s+.*$'
+          line: 'PasswordAuthentication no  # ANSIBLE MANAGED LINE'
+      register: _result_lineinfile
+
+    - name: Validate sshd_config
+      command: /usr/sbin/sshd -T -f /etc/ssh/sshd_config
+      register: _result_validate
+      failed_when: _result_validate.rc != 0
+
+    - name: Restore from backup
+      copy:
+        src: _result_copy.dest
+        dest: /etc/ssh/sshd_config
+        remote_src: yes
+      when:
+        - _result_validate is failed
+
+    - name: Reload sshd
+      systemd:
+        name: sshd
+        state: reloaded
+      when:
+        - _result_lineinfile.changed
+        - _result_validate is succeeded
+  when: _result_check.results | selectattr('changed') | list | count > 0
