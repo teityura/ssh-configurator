@@ -1,15 +1,18 @@
 - import_tasks: add_authorized_key.yml
 - import_tasks: allow_sudo.yml
 
-- name: Set ssh_version
+- name: Set _ssh_version
   block:
-    - command: ssh -V
+    - name: Get openssh version
+      command: /usr/bin/ssh -V
       register: _result_ssh_version
-    - set_fact:
+    - name: Extract major version
+      set_fact:
         _ssh_version: "{{ _result_ssh_version.stderr | regex_replace(ptn, '\\1') }}"
       vars:
         ptn: "^OpenSSH_([0-9]+\\.[0-9]+).*"
-    - debug:
+    - name: Print _ssh_version
+      debug:
         var: _ssh_version
 
 - import_tasks: allow_root_login.yml
