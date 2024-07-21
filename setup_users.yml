@@ -22,8 +22,6 @@
   become: yes
   become_method: sudo
   remote_user: ansible_user
-  vars:
-    KEY_NAME: 'common'
   roles:
     - role: users
       vars:

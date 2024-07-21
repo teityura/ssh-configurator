@@ -6,8 +6,6 @@
         _config_path: "/etc/ssh/ssh_config.d/99-{{ _project_name }}.conf"
       vars:
         _project_name: "{{ playbook_dir.split('/')[-1] }}"
-  vars:
-    KEY_NAME: 'common'
   roles:
     - name: Include ssh role
       role: ssh
