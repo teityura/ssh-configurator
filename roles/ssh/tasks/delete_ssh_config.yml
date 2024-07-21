@@ -1,0 +1,11 @@
+- name: Find ssh configs
+  find:
+    paths: "{{ Ansible_ssh_config | dirname }}"
+    patterns: "{{ Ansible_ssh_config | basename }}*"
+  register: _result_find
+
+- name: Delete ssh configs
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ _result_find.files | map(attribute='path') | list }}"

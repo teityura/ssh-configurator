@@ -1,0 +1,22 @@
+- hosts: localhost
+  gather_facts: no
+  pre_tasks:
+    - name: Set _config_path
+      set_fact:
+        _config_path: "/etc/ssh/ssh_config.d/99-{{ _project_name }}.conf"
+      vars:
+        _project_name: "{{ playbook_dir.split('/')[-1] }}"
+  tasks:
+    - name: Include delete_ssh_keys
+      include_role:
+        name: ssh
+        tasks_from: delete_ssh_keys
+      vars:
+        Ansible_ssh_config: "{{ _config_path }}"
+
+    - name: Include delete_ssh_config
+      include_role:
+        name: ssh
+        tasks_from: delete_ssh_config
+      vars:
+        Ansible_ssh_config: "{{ _config_path }}"

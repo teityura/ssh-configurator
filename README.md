@@ -1,6 +1,8 @@
 # ssh-configurator
 
-## 1. edit roles/ssh/vars/main.yml
+## Usage
+
+### 1. edit roles/ssh/vars/main.yml
 
 ``` yml
 ---
@@ -27,13 +29,19 @@ ssh_hosts:
     key_indiv: yes
 ```
 
-## 2. run setup_ssh.yml
+### 2. edit group_vars/all.yml
 
-``` log
-ansible-playbook setup.yml
+``` yml
+KEY_NAME: '<key_name>'
 ```
 
-## 3. result
+### 3. run
+
+```
+make
+```
+
+## Log
 
 ``` log
 [root@adm ~]$ ls -l /keys/common* /keys/vm_*

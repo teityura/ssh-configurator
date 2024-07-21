@@ -1,6 +1,4 @@
 default: deploy
-cl: clean
-cla: clean clean_all
 
 deploy:
 	ansible-playbook setup_ssh.yml
@@ -12,13 +10,10 @@ ssh:
 user:
 	ansible-playbook setup_users.yml
 
-clean:
-	rm -f /etc/ssh/ssh_config.d/99-*.conf
-
 clean_all:
 	@echo "Are you sure you want to delete everything? [yes/no]" && read ans; \
 	if [ "$$ans" = "yes" ]; then \
-		rm -f /etc/ssh/ssh_config.d/99-*; \
+		ansible-playbook clean_all.yml; \
 	else \
 		echo "Deletion canceled."; \
 	fi

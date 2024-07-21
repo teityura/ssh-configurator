@@ -1,0 +1,24 @@
+- name: Slurp ssh_config
+  slurp:
+    src: "{{ Ansible_ssh_config }}"
+  register: _result_slurp
+
+- name: Set _patterns
+  set_fact:
+    _patterns: "{{ key_basenames | map('regex_replace', '$', '*') | list }}"
+  vars:
+    content: "{{ _result_slurp.content | b64decode }}"
+    key_fullpaths: "{{ content | regex_findall('IdentityFile (.*)') }}"
+    key_basenames: "{{ key_fullpaths | map('basename') | list }}"
+
+- name: Find ssh keys
+  find:
+    paths: "/keys/"
+    patterns: "{{ _patterns }}"
+  register: _result_find
+
+- name: Delete ssh keys
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ _result_find.files | map(attribute='path') | list }}"
