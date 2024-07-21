@@ -10,10 +10,10 @@ ssh:
 user:
 	ansible-playbook setup_users.yml
 
-clean_all:
+clean:
 	@echo "Are you sure you want to delete everything? [yes/no]" && read ans; \
 	if [ "$$ans" = "yes" ]; then \
-		ansible-playbook clean_all.yml; \
+		ansible-playbook clean.yml; \
 	else \
 		echo "Deletion canceled."; \
 	fi
