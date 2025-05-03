@@ -6,6 +6,7 @@
     - name: Get openssh version
       command: /usr/bin/ssh -V
       register: _result_ssh_version
+      changed_when: no
     - name: Extract major version
       set_fact:
         _ssh_version: "{{ _result_ssh_version.stderr | regex_replace(ptn, '\\1') }}"

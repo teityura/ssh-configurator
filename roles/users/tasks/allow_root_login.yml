@@ -34,6 +34,10 @@
 
 - name: Reload sshd
   systemd:
-    name: sshd
+    name: "{{ service_map[ansible_os_family] }}"
     state: reloaded
+  vars:
+    service_map:
+      Debian: ssh
+      RedHat: sshd
   when: _result_blockinfile.changed

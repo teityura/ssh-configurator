@@ -4,9 +4,9 @@
     type: rsa
     size: 4096
     mode: 0600
-  vars:
-    indiv: "{{ host.key_indiv | default(false) }}"
-    key_name: "{{ indiv | ternary(host.name, Default_key_name) }}"
   loop: "{{ ssh_hosts }}"
   loop_control:
     loop_var: host
+  vars:
+    indiv: "{{ host.key_indiv | default(false) }}"
+    key_name: "{{ indiv | ternary(host.name, Default_key_name) }}"
